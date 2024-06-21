@@ -10,7 +10,6 @@ let refreshTokens = [];
 const login = async (req, res) => {
   const { email, password } = req.body;
   const getUser = await GetUserModel.findOne({ where: { email, password } });
-
   if (getUser) {
     const accessToken = jwt.sign(
       {
@@ -31,9 +30,7 @@ const login = async (req, res) => {
 
     refreshTokens.push(refreshToken);
     res.json({ accessToken, refreshToken });
-  } else {
-    res.status(401).json({ message: "Email or password is invalid" });
-  }
+  } 
 };
 
 const usersRefreshToken = (req, res) => {

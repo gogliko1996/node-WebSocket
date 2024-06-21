@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
       const existingUser = await UserModel.findOne({ where: { email } });
       
       if (existingUser) {
-        return res.status(400).json({ error: 'Email already in use' });
+        return res.status(409).send({ error: 'Email already in use' });
       }
     const newUser = await UserModel.create({
       firstName,
@@ -19,10 +19,10 @@ const registerUser = async (req, res) => {
     });
 
     
-    res.status(201).json(newUser);
+    res.status(201).json({email: newUser.email });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'fatal' });
+    res.status(500).json({ error: 'An unexpected error occurred' });
   }
 };
 
