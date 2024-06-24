@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const userRouter = require("./router/autorisation.ts");
+const ssrRouter = require('./server/server.js')
 const sequelizeConfig = require('./config/config.ts'); 
 const app = express();
 
@@ -10,7 +11,7 @@ require("dotenv").config();
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use(userRouter);
+app.use(userRouter,ssrRouter);
 
 const startServer = async () => {
   try {
