@@ -1,5 +1,5 @@
 const { DataTypes, Model } = require("sequelize");
-const sequelize = require("../../config/config.ts");
+const sequelize = require("../../config/config.js");
 
 class User extends Model {
   toJSON() {

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const GetUserModel = require("../../models/userModels/userModel.ts");
+const GetUserModel = require("../../models/userModels/userModel.js");
 require("dotenv").config();
 
 const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;

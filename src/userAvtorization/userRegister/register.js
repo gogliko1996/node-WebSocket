@@ -1,5 +1,5 @@
 
-const UserModel = require('../../models/userModels/userModel.ts'); 
+const UserModel = require('../../models/userModels/userModel.js'); 
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
