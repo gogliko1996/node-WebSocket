@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 
     const modifiedHtml = data.replace(
       '<div id="root"></div>',
-      `<div id="root"><App /></div>`
+      `<div id="root">``<App />``</div>`
     );
 
     res.send(modifiedHtml);
