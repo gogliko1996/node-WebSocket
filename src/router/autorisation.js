@@ -1,7 +1,7 @@
 const expressRoute = require('express');
 const loginUsers = require('../userAvtorization/userLogin/userLogIn.js')
 const userRegister = require('../userAvtorization/userRegister/register.js');
-const setTodo = require('../fanction/setTodo.js');
+const todo = require('../fanction/setTodo.js');
 
 
 const router = expressRoute.Router();
@@ -14,7 +14,13 @@ router.post('/auth/refresh-token',loginUsers.usersRefreshToken)
 
 router.get('/protected', loginUsers.protected);
 
-router.post('/todo', setTodo)
+router.post('/todo', todo.setTodo)
+
+router.get('/getTodo/:userId', todo.getTodo)
+
+router.patch('/updateTodo/:id', todo.updateTodo);
+
+router.delete('/deleteTodo/:id', todo.deleteTodo)
 
 module.exports = router
 

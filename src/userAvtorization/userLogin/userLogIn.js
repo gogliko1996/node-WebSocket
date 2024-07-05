@@ -35,7 +35,6 @@ const login = async (req, res) => {
 
 const usersRefreshToken = (req, res) => {
   const { token } = req.body;
-
   if (!token) {
     return res.status(401).json({ message: "No token provided" });
   }

@@ -2,7 +2,13 @@ const  { DataTypes, Model, Sequelize } = require("sequelize");
 const sequelize = require("../config/config.js");
 const User = require("./userModels/userModel.js");
 
-class TodoModel extends Model {}
+class TodoModel extends Model {
+  toJSON() {
+    let attributes = Object.assign({}, this.get());
+    delete attributes.userId;
+    return attributes;
+  }
+}
 
 TodoModel.init(
   {
