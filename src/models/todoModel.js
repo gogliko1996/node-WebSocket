@@ -1,6 +1,8 @@
-const  { DataTypes, Model, Sequelize } = require("sequelize");
+const  { DataTypes, Model } = require("sequelize");
 const sequelize = require("../config/config.js");
 const User = require("./userModels/userModel.js");
+
+
 
 class TodoModel extends Model {
   toJSON() {
@@ -26,7 +28,7 @@ TodoModel.init(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('activ', 'noqctiv'),
+      type: DataTypes.ENUM('todo', 'inProgres','done'),
       allowNull: false,
       defaultValue: "todo",
     },

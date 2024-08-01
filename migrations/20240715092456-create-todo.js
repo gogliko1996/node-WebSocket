@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('TodoModels', {
+    await queryInterface.createTable('Todos', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       status: {
-        type: Sequelize.ENUM('activ', 'noactiv')
+        type: Sequelize.ENUM('todo', 'inProgres','done')
       },
       userId: {
         type: Sequelize.INTEGER
@@ -32,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('TodoModels');
+    await queryInterface.dropTable('Todos');
   }
 };
