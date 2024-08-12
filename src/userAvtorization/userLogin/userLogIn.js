@@ -5,11 +5,10 @@ require("dotenv").config();
 const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const REFRESH_SECRET_KEY = process.env.AWS_REFRESH_SECRET_KEY;
 
-let refreshTokens = [];
-
 const login = async (req, res) => {
   const { email, password } = req.body;
   const getUser = await GetUserModel.findOne({ where: { email, password } });
+  
   if (getUser) {
     const accessToken = jwt.sign(
       {
@@ -25,25 +24,26 @@ const login = async (req, res) => {
         id: getUser.dataValues.id,
         username: `${getUser.dataValues.firstName}${getUser.dataValues.lastname}`,
       },
-      REFRESH_SECRET_KEY
+      REFRESH_SECRET_KEY,
+      { expiresIn: "7d" }
     );
 
-    refreshTokens.push(refreshToken);
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
     res.json({ accessToken, refreshToken });
-  } 
+  } else {
+    res.status(401).json({ message: "Invalid email or password" });
+  }
 };
 
 const usersRefreshToken = (req, res) => {
-  const { token } = req.body;
-  if (!token) {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
     return res.status(401).json({ message: "No token provided" });
   }
 
-  if (!refreshTokens.includes(token)) {
-    return res.status(403).json({ message: "Invalid refresh token" });
-  }
-
-  jwt.verify(token, REFRESH_SECRET_KEY, (err, user) => {
+  jwt.verify(refreshToken, REFRESH_SECRET_KEY, (err, user) => {
     if (err) {
       return res.status(403).json({ message: "Invalid refresh token" });
     }
@@ -54,13 +54,14 @@ const usersRefreshToken = (req, res) => {
       { expiresIn: "1h" }
     );
 
+    res.cookie('accessToken', newAccessToken, { httpOnly: true, secure: true });
     res.json({ accessToken: newAccessToken });
   });
 };
 
-const protected = async(req, res) => {
+const protected = async (req, res) => {
   const authHeader = req.headers["authorization"];
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(403).json({ message: "No token provided" });
   }
@@ -81,6 +82,10 @@ const protected = async(req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+  res.status(200).json({ message: 'Logged out successfully' });
+};
 
-
-module.exports = { protected, login, usersRefreshToken };
+module.exports = { protected, login, usersRefreshToken, logout };

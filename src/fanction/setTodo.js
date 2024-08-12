@@ -21,7 +21,6 @@ const getTodo = async (req, res) => {
 
   try {
     const data = await TodoModel.findAll({ where: { userId } });
-
     if (data.length === 0) {
       return res.status(404).json({ error: "No todos found for this user" });
     }

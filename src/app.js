@@ -8,10 +8,13 @@ const path = require("path");
 require("@babel/register")({
   presets: ["@babel/preset-env", "@babel/preset-react"],
 });
+const cookieParser = require('cookie-parser');
+
 
 const app = express();
 
 require("dotenv").config();
+app.use(cookieParser())
 
 app.use(bodyParser.json());
 app.use(cors());
