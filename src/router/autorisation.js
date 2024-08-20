@@ -13,13 +13,15 @@ router.post("/auth/refresh-token", loginUsers.usersRefreshToken);
 
 router.get("/protected", loginUsers.protected);
 
-router.post("/todo", todo.setTodo);
+router.post("/todo", (req, res) => {
+  todo.setTodo(req, res, req.app.get("wss"));
+});
 
 router.get("/getTodo/:userId", todo.getTodo);
 
-router.patch("/updateTodo/:id", (req,res) => {
-    todo.updateTodo(req, res, req.app.get('wss'))
- });
+router.patch("/updateTodo/:id", (req, res) => {
+  todo.updateTodo(req, res, req.app.get("wss"));
+});
 
 router.delete("/deleteTodo/:id", todo.deleteTodo);
 

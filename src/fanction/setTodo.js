@@ -1,17 +1,25 @@
-const { Json } = require("sequelize/lib/utils");
 const TodoModel = require("../models/todoModel");
 const WebSocket = require("ws");
 
-
-const setTodo = async (req, res) => {
+const setTodo = async (req, res, wss) => {
   const { title, description, status, userId } = req.body;
   try {
-    await TodoModel.create({
+    const data = await TodoModel.create({
       title,
       description,
       status,
       userId,
     });
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({
+          type: 'Create_User',
+          payload: data
+        }));
+      }
+    });
+
     res.status(201);
   } catch (error) {
     console.error("Error:", error);
@@ -19,7 +27,7 @@ const setTodo = async (req, res) => {
   }
 };
 
-const getTodo = async (req, res, wss) => {
+const getTodo = async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -54,7 +62,10 @@ const updateTodo = async (req, res, wss) => {
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(data));
+        client.send(JSON.stringify({
+          type: "UPDATE_TODO",
+          payload: data,
+        }));
       }
     });
 
