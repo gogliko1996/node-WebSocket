@@ -17,7 +17,9 @@ router.post("/todo", todo.setTodo);
 
 router.get("/getTodo/:userId", todo.getTodo);
 
-router.patch("/updateTodo/:id", todo.updateTodo);
+router.patch("/updateTodo/:id", (req,res) => {
+    todo.updateTodo(req, res, req.app.get('wss'))
+ });
 
 router.delete("/deleteTodo/:id", todo.deleteTodo);
 

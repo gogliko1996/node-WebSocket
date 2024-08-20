@@ -32,6 +32,9 @@ TodoModel.init(
       allowNull: false,
       defaultValue: "todo",
     },
+    startStatus: {
+      type: DataTypes.TEXT,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -1,4 +1,7 @@
+const { Json } = require("sequelize/lib/utils");
 const TodoModel = require("../models/todoModel");
+const WebSocket = require("ws");
+
 
 const setTodo = async (req, res) => {
   const { title, description, status, userId } = req.body;
@@ -16,7 +19,7 @@ const setTodo = async (req, res) => {
   }
 };
 
-const getTodo = async (req, res) => {
+const getTodo = async (req, res, wss) => {
   const { userId } = req.params;
 
   try {
@@ -31,9 +34,9 @@ const getTodo = async (req, res) => {
   }
 };
 
-const updateTodo = async (req, res) => {
+const updateTodo = async (req, res, wss) => {
   const { id } = req.params;
-  const { title, description, status } = req.body;
+  const { title, description, status, startStatus } = req.body;
 
   try {
     const data = await TodoModel.findByPk(id);
@@ -45,8 +48,15 @@ const updateTodo = async (req, res) => {
     data.title = title || data.title;
     data.description = description || data.description;
     data.status = status || data.status;
+    data.startStatus = startStatus || data.startStatus;
 
     await data.save();
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
+      }
+    });
 
     res.status(200).json(data);
   } catch (error) {

@@ -5,6 +5,8 @@ const userRouter = require("./router/autorisation.js");
 const sequelizeConfig = require("./config/config.js");
 const fs = require("fs");
 const path = require("path");
+const http = require('http');
+const WebSocket = require('ws');
 require("@babel/register")({
   presets: ["@babel/preset-env", "@babel/preset-react"],
 });
@@ -12,6 +14,10 @@ const cookieParser = require('cookie-parser');
 
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+app.set('wss', wss);
 
 require("dotenv").config();
 app.use(cookieParser())
@@ -19,6 +25,8 @@ app.use(cookieParser())
 app.use(bodyParser.json());
 app.use(cors());
 app.use(userRouter);
+
+
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -38,7 +46,6 @@ app.get("/", (req, res) => {
     res.send(modifiedHtml);
   });
 });
-
 const startServer = async () => {
   try {
     await sequelizeConfig.authenticate();
@@ -47,8 +54,8 @@ const startServer = async () => {
     await sequelizeConfig.sync({ alter: true });
     console.log("All models were synchronized successfully.");
 
-    app.listen(process.env.APP_PORT, () => {
-      console.log(`App running on port ${process.env.APP_PORT}.`);
+    server.listen(process.env.APP_PORT, () => {
+      console.log(`Server running on port ${process.env.APP_PORT}.`);
     });
   } catch (error) {
     console.error("Unable to connect to the database:", error);
@@ -56,3 +63,4 @@ const startServer = async () => {
 };
 
 startServer();
+
