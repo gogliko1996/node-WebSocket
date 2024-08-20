@@ -13,10 +13,12 @@ const setTodo = async (req, res, wss) => {
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({
-          type: 'Create_User',
-          payload: data
-        }));
+        client.send(
+          JSON.stringify({
+            type: "Create_User",
+            payload: data,
+          })
+        );
       }
     });
 
@@ -62,10 +64,12 @@ const updateTodo = async (req, res, wss) => {
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({
-          type: "UPDATE_TODO",
-          payload: data,
-        }));
+        client.send(
+          JSON.stringify({
+            type: "UPDATE_TODO",
+            payload: data,
+          })
+        );
       }
     });
 
@@ -76,7 +80,7 @@ const updateTodo = async (req, res, wss) => {
   }
 };
 
-const deleteTodo = async (req, res) => {
+const deleteTodo = async (req, res, wss) => {
   const { id } = req.params;
   try {
     const data = await TodoModel.findByPk(id);
@@ -86,6 +90,18 @@ const deleteTodo = async (req, res) => {
     }
 
     await data.destroy();
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(
+          JSON.stringify({
+            type: "Delete",
+            payload: data,
+          })
+        );
+      }
+    });
+
     res.status(200).json({ message: "Todo deleted successfully" });
   } catch (error) {
     console.error("Error:", error);

@@ -23,6 +23,8 @@ router.patch("/updateTodo/:id", (req, res) => {
   todo.updateTodo(req, res, req.app.get("wss"));
 });
 
-router.delete("/deleteTodo/:id", todo.deleteTodo);
+router.delete("/deleteTodo/:id", (req, res) => {
+    todo.deleteTodo(req, res, req.app.get('wss'))
+});
 
 module.exports = router;
