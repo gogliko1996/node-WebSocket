@@ -1,7 +1,12 @@
 const TodoModel = require("../models/todoModel");
 const WebSocket = require("ws");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-const setTodo = async (req, res, wss) => {
+const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+
+const setTodo = async (req, res) => {
+  const wss = req.app.get("wss");
   const { title, description, status, userId } = req.body;
   try {
     const data = await TodoModel.create({
@@ -12,7 +17,10 @@ const setTodo = async (req, res, wss) => {
     });
 
     wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
+      if (
+        client.readyState === WebSocket.OPEN &&
+        Number(client.userId) === userId
+      ) {
         client.send(
           JSON.stringify({
             type: "Create_User",
@@ -44,9 +52,14 @@ const getTodo = async (req, res) => {
   }
 };
 
-const updateTodo = async (req, res, wss) => {
+const updateTodo = async (req, res) => {
+  const wss = req.app.get("wss");
+  const identitication = req.headers["authorization"]
   const { id } = req.params;
-  const { title, description, status, startStatus } = req.body;
+  const { title, description, status, startStatus} = req.body;
+
+  const token = identitication.split(" ")[1]
+  const user = jwt.verify(token, SECRET_KEY)
 
   try {
     const data = await TodoModel.findByPk(id);
@@ -63,7 +76,11 @@ const updateTodo = async (req, res, wss) => {
     await data.save();
 
     wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
+
+      if (
+        client.readyState === WebSocket.OPEN &&
+        Number(client.userId) === user.id
+      ) {
         client.send(
           JSON.stringify({
             type: "UPDATE_TODO",
@@ -80,8 +97,14 @@ const updateTodo = async (req, res, wss) => {
   }
 };
 
-const deleteTodo = async (req, res, wss) => {
+const deleteTodo = async (req, res) => {
+  const wss = req.app.get("wss");
+  const identitication = req.headers["authorization"]
   const { id } = req.params;
+
+  const token = identitication.split(" ")[1]
+  const user = jwt.verify(token, SECRET_KEY)
+
   try {
     const data = await TodoModel.findByPk(id);
 
@@ -92,7 +115,10 @@ const deleteTodo = async (req, res, wss) => {
     await data.destroy();
 
     wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
+      if (
+        client.readyState === WebSocket.OPEN &&
+        Number(client.userId) === user.id
+      ) {
         client.send(
           JSON.stringify({
             type: "Delete",

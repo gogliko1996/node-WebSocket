@@ -10,7 +10,15 @@ const WebSocket = require('ws');
 require("@babel/register")({
   presets: ["@babel/preset-env", "@babel/preset-react"],
 });
+require("dotenv").config();
 const cookieParser = require('cookie-parser');
+const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+
+const sessionParser = require('express-session')({
+  secret: SECRET_KEY,
+  resave: false,
+  saveUninitialized: false,
+});
 
 
 const app = express();
@@ -19,14 +27,18 @@ const wss = new WebSocket.Server({ server });
 
 app.set('wss', wss);
 
-require("dotenv").config();
 app.use(cookieParser())
+app.use(sessionParser);
 
 app.use(bodyParser.json());
 app.use(cors());
 app.use(userRouter);
 
-
+wss.on('connection', (ws, req) => {
+  sessionParser(req, {}, () => {
+    ws.userId = req.headers['sec-websocket-protocol']
+  });
+});
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -46,6 +58,8 @@ app.get("/", (req, res) => {
     res.send(modifiedHtml);
   });
 });
+
+
 const startServer = async () => {
   try {
     await sequelizeConfig.authenticate();
