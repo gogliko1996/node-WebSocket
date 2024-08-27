@@ -1,4 +1,4 @@
-const TodoModel = require("../models/todoModel");
+const TodoModel = require("./models/todoModel");
 const WebSocket = require("ws");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
