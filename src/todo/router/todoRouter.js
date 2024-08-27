@@ -1,14 +1,17 @@
 const expressRoute = require("express");
-const todo = require("../setTodo.js");
+const getTodo = require('../dto/get.todo.js')
+const createTodo = require('../dto/create.todo.js')
+const deleteTodo = require('../dto/delete.todo.js')
+const updateTodo = require('../dto/update.todo.js')
 
 const router = expressRoute.Router();
 
-router.post("/todo", todo.setTodo);
+router.post("/todo", createTodo);
 
-router.get("/getTodo/:userId", todo.getTodo);
+router.get("/getTodo/:userId", getTodo);
 
-router.patch("/updateTodo/:id", todo.updateTodo);
+router.patch("/updateTodo/:id", updateTodo);
 
-router.delete("/deleteTodo/:id", todo.deleteTodo);
+router.delete("/deleteTodo/:id", deleteTodo);
 
 module.exports = router;

@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const toduRouter = require("./todo/router/todoRouter.js");
-const userRoute = require('./auth/router/userRouter.js')
+const userRoute = require('./auth/router/user.Router.js')
+const createUser = require('./user/router/create.user.router.js')
 const sequelizeConfig = require("./config/config.js");
 const fs = require("fs");
 const path = require("path");
@@ -35,6 +36,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(toduRouter);
 app.use(userRoute)
+app.use(createUser)
 
 wss.on('connection', (ws, req) => {
   sessionParser(req, {}, () => {

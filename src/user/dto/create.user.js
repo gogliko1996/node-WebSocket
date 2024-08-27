@@ -1,7 +1,6 @@
+const UserModel = require('../models/user.Model.js'); 
 
-const UserModel = require('../models/userModel.js'); 
-
-const registerUser = async (req, res) => {
+const createUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   
@@ -26,4 +25,4 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = registerUser;
+module.exports = createUser;
