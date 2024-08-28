@@ -34,6 +34,7 @@ app.use(sessionParser);
 
 app.use(bodyParser.json());
 app.use(cors());
+
 app.use(toduRouter);
 app.use(userRoute)
 app.use(createUser)

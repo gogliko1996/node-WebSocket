@@ -5,8 +5,6 @@ require("dotenv").config();
 
 const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 
-
-
 const deleteTodo = async (req, res) => {
     const wss = req.app.get("wss");
     const identitication = req.headers["authorization"]

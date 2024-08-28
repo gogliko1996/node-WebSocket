@@ -1,12 +1,14 @@
 const expressRoute = require("express");
-const loginUsers = require("../dto/user.LogIn.js")
+const login = require("../dto/user.LogIn.js")
+const usersRefreshToken = require('../dto/users.RefreshToken.js')
+const protected = require('../dto/protected.js')
 
 const router = expressRoute.Router();
 
-router.post("/login", loginUsers.login);
+router.post("/login", login);
 
-router.post("/auth/refresh-token", loginUsers.usersRefreshToken);
+router.post("/auth/refresh-token", usersRefreshToken);
 
-router.get("/protected", loginUsers.protected);
+router.get("/protected", protected);
 
 module.exports = router
