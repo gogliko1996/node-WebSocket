@@ -29,7 +29,6 @@ const updateTodo = async (req, res) => {
       await data.save();
   
       wss.clients.forEach((client) => {
-  
         if (
           client.readyState === WebSocket.OPEN &&
           Number(client.userId) === user.id
