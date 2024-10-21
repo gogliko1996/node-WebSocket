@@ -1,8 +1,8 @@
 const expressRoute = require("express");
-const getTodo = require('../dto/get.todo.js')
-const createTodo = require('../dto/create.todo.js')
-const deleteTodo = require('../dto/delete.todo.js')
-const updateTodo = require('../dto/update.todo.js')
+const getTodo = require('../controllers/get.todo.js')
+const createTodo = require('../controllers/create.todo.js')
+const deleteTodo = require('../controllers/delete.todo.js')
+const updateTodo = require('../controllers/update.todo.js')
 
 const router = expressRoute.Router();
 

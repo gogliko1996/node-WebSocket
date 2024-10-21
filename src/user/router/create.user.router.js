@@ -1,6 +1,6 @@
 const expressRoute = require("express");
 
-const createUser = require("../dto/create.user.js");
+const createUser = require("../controllers/create.user.js");
 
 const router = expressRoute.Router();
 

@@ -1,7 +1,7 @@
 const expressRoute = require("express");
-const login = require("../dto/user.LogIn.js")
-const usersRefreshToken = require('../dto/users.RefreshToken.js')
-const protected = require('../dto/protected.js')
+const login = require("../controllers/user.LogIn.js")
+const usersRefreshToken = require('../controllers/users.RefreshToken.js')
+const protected = require('../controllers/protected.js')
 
 const router = expressRoute.Router();
 

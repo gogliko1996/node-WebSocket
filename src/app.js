@@ -39,7 +39,15 @@ app.use(toduRouter);
 app.use(userRoute)
 app.use(createUser)
 
+if (wss.readyState === WebSocket.OPEN) {
+  wss.send(yourData);
+} else {
+  console.error("WebSocket is not open. State:", wss.readyState);
+}
+
 wss.on('connection', (ws, req) => {
+  console.log('conect');
+  
   sessionParser(req, {}, () => {
     ws.userId = req.headers['sec-websocket-protocol']
   });
