@@ -2,54 +2,56 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const toduRouter = require("./todo/router/todoRouter.js");
-const userRoute = require('./auth/router/user.Router.js')
-const createUser = require('./user/router/create.user.router.js')
+const userRoute = require("./auth/router/user.Router.js");
+const createUser = require("./user/router/create.user.router.js");
 const sequelizeConfig = require("./config/config.js");
 const fs = require("fs");
 const path = require("path");
-const http = require('http');
-const WebSocket = require('ws');
+const http = require("http");
+const WebSocket = require("ws");
 require("@babel/register")({
   presets: ["@babel/preset-env", "@babel/preset-react"],
 });
 require("dotenv").config();
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 
-const sessionParser = require('express-session')({
+const sessionParser = require("express-session")({
   secret: SECRET_KEY,
   resave: false,
   saveUninitialized: false,
 });
 
-
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.set('wss', wss);
+app.set("wss", wss);
 
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(sessionParser);
 
 app.use(bodyParser.json());
 app.use(cors());
 
 app.use(toduRouter);
-app.use(userRoute)
-app.use(createUser)
+app.use(userRoute);
+app.use(createUser);
 
-if (wss.readyState === WebSocket.OPEN) {
-  wss.send(yourData);
-} else {
-  console.error("WebSocket is not open. State:", wss.readyState);
-}
-
-wss.on('connection', (ws, req) => {
-  console.log('conect');
-  
+wss.on("connection", (ws, req) => {
   sessionParser(req, {}, () => {
-    ws.userId = req.headers['sec-websocket-protocol']
+    ws.userId = req.headers["sec-websocket-protocol"];
+  });
+
+  ws.on("message", (message) => {
+    const data = JSON.parse(message);
+    if (data.type === "USER_ID") {
+      ws.userId = toString(data.id);
+    }
+  });
+
+  ws.on("close", () => {
+    console.log("Client disconnected");
   });
 });
 
@@ -72,7 +74,6 @@ app.get("/", (req, res) => {
   });
 });
 
-
 const startServer = async () => {
   try {
     await sequelizeConfig.authenticate();
@@ -90,4 +91,3 @@ const startServer = async () => {
 };
 
 startServer();
-
