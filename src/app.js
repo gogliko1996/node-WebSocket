@@ -39,6 +39,8 @@ app.use(userRoute);
 app.use(createUser);
 
 wss.on("connection", (ws, req) => {
+  console.log("conected");
+
   sessionParser(req, {}, () => {
     ws.userId = req.headers["sec-websocket-protocol"];
   });
@@ -46,12 +48,8 @@ wss.on("connection", (ws, req) => {
   ws.on("message", (message) => {
     const data = JSON.parse(message);
     if (data.type === "USER_ID") {
-      ws.userId = toString(data.id);
+      ws.userId = data.id;
     }
-  });
-
-  ws.on("close", () => {
-    console.log("Client disconnected");
   });
 });
 
